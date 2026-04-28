@@ -30,9 +30,10 @@ let balance = 0,
   outcome = 0;
 const DELETE = "delete",
   EDIT = "edit";
+const logic = window.BudgetLogic;
 
 // LOOK IF THERE IS DATA IN LOCAL STORAGE
-ENTRY_LIST = JSON.parse(localStorage.getItem("entry_list")) || [];
+ENTRY_LIST = logic.loadEntries(localStorage);
 updateUI();
 
 //EVENT LISTENERS
@@ -57,15 +58,11 @@ allBtn.addEventListener("click", function () {
 
 addExpense.addEventListener("click", function () {
   // CHECK IF ONE OF THE INPUT IS EMPTY => EXIT
-  if (!expenseTitle.value || !expenseAmount.value) return;
+  if (!logic.hasRequiredEntryFields(expenseTitle.value, expenseAmount.value)) return;
 
   // ADD INPUTs TO ENTRY_LIST
-  let expense = {
-    type: "expense",
-    title: expenseTitle.value,
-    amount: +expenseAmount.value,
-  };
-  ENTRY_LIST.push(expense);
+  let expense = logic.createEntry("expense", expenseTitle.value, expenseAmount.value);
+  ENTRY_LIST = logic.addEntry(ENTRY_LIST, expense);
 
   updateUI();
   clearInput([expenseTitle, expenseAmount]);
@@ -73,15 +70,11 @@ addExpense.addEventListener("click", function () {
 
 addIncome.addEventListener("click", function () {
   // CHECK IF ONE OF THE INPUT IS EMPTY => EXIT
-  if (!incomeTitle.value || !incomeAmount.value) return;
+  if (!logic.hasRequiredEntryFields(incomeTitle.value, incomeAmount.value)) return;
 
   // ADD INPUTs TO ENTRY_LIST
-  let income = {
-    type: "income",
-    title: incomeTitle.value,
-    amount: +incomeAmount.value,
-  };
-  ENTRY_LIST.push(income);
+  let income = logic.createEntry("income", incomeTitle.value, incomeAmount.value);
+  ENTRY_LIST = logic.addEntry(ENTRY_LIST, income);
 
   updateUI();
   clearInput([incomeTitle, incomeAmount]);
@@ -104,7 +97,7 @@ function deleteOrEdit(event) {
 }
 
 function deleteEntry(entry) {
-  ENTRY_LIST.splice(entry.id, 1);
+  ENTRY_LIST = logic.removeEntryAt(ENTRY_LIST, entry.id);
   updateUI();
 }
 
@@ -122,14 +115,13 @@ function editEntry(entry) {
 }
 
 function updateUI() {
-  income = calculateTotal("income", ENTRY_LIST);
-  outcome = calculateTotal("expense", ENTRY_LIST);
-  balance = Math.abs(calculateBalance(income, outcome));
-
-  let sign = income >= outcome ? "$" : "-$";
+  const summary = logic.getBudgetSummary(ENTRY_LIST);
+  income = summary.income;
+  outcome = summary.outcome;
+  balance = summary.balance;
 
   //UPDATE UI
-  balanceEl.innerHTML = `<small>${sign}</small>${balance}`;
+  balanceEl.innerHTML = `<small>${summary.sign}</small>${balance}`;
   outcomeTotalEl.innerHTML = `<small>$</small>${outcome}`;
   incomeTotalEl.innerHTML = `<small>$</small>${income}`;
 
@@ -144,7 +136,7 @@ function updateUI() {
     showEntry(allList, entry.type, entry.title, entry.amount, index);
   });
   updateChart(income, outcome);
-  localStorage.setItem("entry_list", JSON.stringify(ENTRY_LIST));
+  logic.saveEntries(localStorage, ENTRY_LIST);
 }
 
 function showEntry(list, type, title, amount, id) {
@@ -163,19 +155,6 @@ function clearElement(elements) {
   });
 }
 
-function calculateTotal(type, list) {
-  let sum = 0;
-  list.forEach((entry) => {
-    if (entry.type == type) {
-      sum += entry.amount;
-    }
-  });
-  return sum;
-}
-
-function calculateBalance(income, outcome) {
-  return income - outcome;
-}
 function clearInput(inputs) {
   inputs.forEach((input) => {
     input.value = "";
