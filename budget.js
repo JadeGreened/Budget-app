@@ -1,4 +1,4 @@
-//SELECT ELEMENTS
+// SELECT ELEMENTS
 const balanceEl = document.querySelector(".balance .value");
 const incomeTotalEl = document.querySelector(".income-total");
 const outcomeTotalEl = document.querySelector(".outcome-total");
@@ -6,15 +6,15 @@ const incomeEl = document.querySelector("#income");
 const expenseEl = document.querySelector("#expense");
 const allEl = document.querySelector("#all");
 const incomeList = document.querySelector("#income .list");
-const expenseList = document.querySelector("#expense .list");
+const expenseList = documentocument.querySelector("#expense .list");
 const allList = document.querySelector("#all .list");
 
-//SELECT BUTTONS
+// SELECT BUTTONS
 const expenseBtn = document.querySelector(".first-tab");
 const incomeBtn = document.querySelector(".second-tab");
 const allBtn = document.querySelector(".third-tab");
 
-//INPUT BTS
+// INPUT BTS
 const addExpense = document.querySelector(".add-expense");
 const expenseTitle = document.getElementById("expense-title-input");
 const expenseAmount = document.getElementById("expense-amount-input");
@@ -23,7 +23,7 @@ const addIncome = document.querySelector(".add-income");
 const incomeTitle = document.getElementById("income-title-input");
 const incomeAmount = document.getElementById("income-amount-input");
 
-//VARIABLES
+// VARIABLES
 let ENTRY_LIST;
 let balance = 0,
   income = 0,
@@ -32,23 +32,25 @@ const DELETE = "delete",
   EDIT = "edit";
 const logic = window.BudgetLogic;
 
-// LOOK IF THERE IS DATA IN LOCAL STORAGE
+// CHECK IF THERE IS DATA IN LOCAL STORAGE
 ENTRY_LIST = logic.loadEntries(localStorage);
 updateUI();
 
-//EVENT LISTENERS
+// EVENT LISTENERS
 expenseBtn.addEventListener("click", function () {
   show(expenseEl);
   hide([incomeEl, allEl]);
   active(expenseBtn);
   inactive([incomeBtn, allBtn]);
 });
+
 incomeBtn.addEventListener("click", function () {
   show(incomeEl);
   hide([expenseEl, allEl]);
   active(incomeBtn);
   inactive([expenseBtn, allBtn]);
 });
+
 allBtn.addEventListener("click", function () {
   show(allEl);
   hide([incomeEl, expenseEl]);
@@ -56,26 +58,66 @@ allBtn.addEventListener("click", function () {
   inactive([incomeBtn, expenseBtn]);
 });
 
-addExpense.addEventListener("click", function () {
-  // CHECK IF ONE OF THE INPUT IS EMPTY => EXIT
-  if (!logic.hasRequiredEntryFields(expenseTitle.value, expenseAmount.value)) return;
+// Helper function to validate amount values
+function validateAmount(amount, type) {
+  const numAmount = Number(amount);
+  
+  // Check if amount is a valid number
+  if (isNaN(numAmount)) {
+    alert(`${type === 'expense' ? 'Expense' : 'Income'} amount must be a valid number`);
+    return false;
+  }
+  
+  // Check if amount is negative
+  if (numAmount < 0) {
+    alert(`${type === 'expense' ? 'Expense' : 'Income'} amount cannot be negative`);
+    return false;
+  }
+  
+  // Check if amount is zero
+  if (numAmount === 0) {
+    alert(`${type === 'expense' ? 'Expense' : 'Income'} amount cannot be zero`);
+    return false;
+  }
+  
+  // Check if amount is unreasonably large (10 million as upper limit)
+  const MAX_REASONABLE_AMOUNT = 10000000;
+  if (numAmount > MAX_REASONABLE_AMOUNT) {
+    alert(`${type === 'expense' ? 'Expense' : 'Income'} amount cannot exceed ${MAX_REASONABLE_AMOUNT.toLocaleString()}`);
+    return false;
+  }
+  
+  return true;
+}
 
-  // ADD INPUTs TO ENTRY_LIST
+// Add expense entry with validation
+addExpense.addEventListener("click", function () {
+  // Check if required fields are empty
+  if (!logic.hasRequiredEntryFields(expenseTitle.value, expenseAmount.value)) return;
+  
+  // Validate amount value
+  if (!validateAmount(expenseAmount.value, 'expense')) return;
+  
+  // Add entry to ENTRY_LIST
   let expense = logic.createEntry("expense", expenseTitle.value, expenseAmount.value);
   ENTRY_LIST = logic.addEntry(ENTRY_LIST, expense);
-
+  
   updateUI();
   clearInput([expenseTitle, expenseAmount]);
 });
 
+// Add income entry with validation
 addIncome.addEventListener("click", function () {
-  // CHECK IF ONE OF THE INPUT IS EMPTY => EXIT
+  // Check if required fields are empty
   if (!logic.hasRequiredEntryFields(incomeTitle.value, incomeAmount.value)) return;
-
-  // ADD INPUTs TO ENTRY_LIST
+  
+  // Validate amount value
+  if (!validateAmount(incomeAmount.value, 'income')) return;
+  
+  // Add entry to ENTRY_LIST
   let income = logic.createEntry("income", incomeTitle.value, incomeAmount.value);
   ENTRY_LIST = logic.addEntry(ENTRY_LIST, income);
-
+  
   updateUI();
   clearInput([incomeTitle, incomeAmount]);
 });
@@ -84,7 +126,7 @@ incomeList.addEventListener("click", deleteOrEdit);
 expenseList.addEventListener("click", deleteOrEdit);
 allList.addEventListener("click", deleteOrEdit);
 
-// HELEPER FUNCS
+// HELPER FUNCTIONS
 function deleteOrEdit(event) {
   const targetBtn = event.target;
   const entry = targetBtn.parentNode;
@@ -120,7 +162,7 @@ function updateUI() {
   outcome = summary.outcome;
   balance = summary.balance;
 
-  //UPDATE UI
+  // Update UI
   balanceEl.innerHTML = `<small>${summary.sign}</small>${balance}`;
   outcomeTotalEl.innerHTML = `<small>$</small>${outcome}`;
   incomeTotalEl.innerHTML = `<small>$</small>${income}`;
@@ -174,6 +216,7 @@ function hide(elements) {
 function active(element) {
   element.classList.add("focus");
 }
+
 function inactive(elements) {
   elements.forEach((element) => {
     element.classList.remove("focus");
