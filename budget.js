@@ -129,7 +129,7 @@ allList.addEventListener("click", deleteOrEdit);
 // HELPER FUNCTIONS
 function deleteOrEdit(event) {
   const targetBtn = event.target;
-  const entry = targetBtn.parentNode;
+  const entry = targetBtn.closest("li");
 
   if (targetBtn.id == EDIT) {
     editEntry(entry);
@@ -139,12 +139,13 @@ function deleteOrEdit(event) {
 }
 
 function deleteEntry(entry) {
-  ENTRY_LIST = logic.removeEntryAt(ENTRY_LIST, entry.id);
+  ENTRY_LIST = logic.removeEntryById(ENTRY_LIST, entry.dataset.entryId);
   updateUI();
 }
 
 function editEntry(entry) {
-  const ENTRY = ENTRY_LIST[entry.id];
+  const ENTRY = logic.findEntryById(ENTRY_LIST, entry.dataset.entryId);
+  if (!ENTRY) return;
 
   if (ENTRY.type == "income") {
     incomeTitle.value = ENTRY.title;
@@ -169,21 +170,21 @@ function updateUI() {
 
   clearElement([expenseList, incomeList, allList]);
 
-  ENTRY_LIST.forEach((entry, index) => {
+  ENTRY_LIST.forEach((entry) => {
     if (entry.type == "expense") {
-      showEntry(expenseList, entry.type, entry.title, entry.amount, index);
+      showEntry(expenseList, entry);
     } else if (entry.type == "income") {
-      showEntry(incomeList, entry.type, entry.title, entry.amount, index);
+      showEntry(incomeList, entry);
     }
-    showEntry(allList, entry.type, entry.title, entry.amount, index);
+    showEntry(allList, entry);
   });
   updateChart(income, outcome);
   logic.saveEntries(localStorage, ENTRY_LIST);
 }
 
-function showEntry(list, type, title, amount, id) {
-  const entry = `<li id="${id}" class="${type}">
-                    <div class="entry">${title} : $${amount}</div>
+function showEntry(list, budgetEntry) {
+  const entry = `<li data-entry-id="${budgetEntry.id}" class="${budgetEntry.type}">
+                    <div class="entry">${budgetEntry.title} : $${budgetEntry.amount}</div>
                     <div id="edit"></div>
                     <div id="delete"></div>
                   </li>`;
