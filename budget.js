@@ -6,8 +6,11 @@ const incomeEl = document.querySelector("#income");
 const expenseEl = document.querySelector("#expense");
 const allEl = document.querySelector("#all");
 const incomeList = document.querySelector("#income .list");
-const expenseList = documentocument.querySelector("#expense .list");
+const expenseList = document.querySelector("#expense .list");
 const allList = document.querySelector("#all .list");
+const languageButtons = document.querySelectorAll(".language-btn");
+const translatableText = document.querySelectorAll("[data-i18n]");
+const translatablePlaceholders = document.querySelectorAll("[data-i18n-placeholder]");
 
 // SELECT BUTTONS
 const expenseBtn = document.querySelector(".first-tab");
@@ -31,9 +34,46 @@ let balance = 0,
 const DELETE = "delete",
   EDIT = "edit";
 const logic = window.BudgetLogic;
+const LANGUAGE_STORAGE_KEY = "budget_app_language";
+const translations = {
+  en: {
+    all: "All",
+    amountPlaceholder: "$0",
+    balance: "Balance",
+    dashboard: "Dashboard",
+    expenseLabel: "Expense",
+    expenses: "Expenses",
+    income: "Income",
+    incomeLabel: "Income",
+    invalidAmount: "{type} amount must be a valid number",
+    maxAmount: "{type} amount cannot exceed {max}",
+    negativeAmount: "{type} amount cannot be negative",
+    outcome: "Outcome",
+    titlePlaceholder: "title",
+    zeroAmount: "{type} amount cannot be zero",
+  },
+  zh: {
+    all: "全部",
+    amountPlaceholder: "金额",
+    balance: "余额",
+    dashboard: "仪表盘",
+    expenseLabel: "支出",
+    expenses: "支出",
+    income: "收入",
+    incomeLabel: "收入",
+    invalidAmount: "{type}金额必须是有效数字",
+    maxAmount: "{type}金额不能超过 {max}",
+    negativeAmount: "{type}金额不能为负数",
+    outcome: "支出",
+    titlePlaceholder: "标题",
+    zeroAmount: "{type}金额不能为零",
+  },
+};
+let currentLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) || "en";
 
 // CHECK IF THERE IS DATA IN LOCAL STORAGE
 ENTRY_LIST = logic.loadEntries(localStorage);
+applyLanguage(currentLanguage);
 updateUI();
 
 // EVENT LISTENERS
@@ -58,32 +98,72 @@ allBtn.addEventListener("click", function () {
   inactive([incomeBtn, expenseBtn]);
 });
 
+languageButtons.forEach((button) => {
+  button.addEventListener("click", function () {
+    applyLanguage(button.dataset.lang);
+  });
+});
+
+function translate(key, replacements = {}) {
+  let text = translations[currentLanguage][key] || translations.en[key] || key;
+
+  Object.keys(replacements).forEach((replacementKey) => {
+    text = text.replace(`{${replacementKey}}`, replacements[replacementKey]);
+  });
+
+  return text;
+}
+
+function applyLanguage(language) {
+  currentLanguage = translations[language] ? language : "en";
+  localStorage.setItem(LANGUAGE_STORAGE_KEY, currentLanguage);
+  document.documentElement.lang = currentLanguage === "zh" ? "zh-CN" : "en";
+
+  translatableText.forEach((element) => {
+    element.textContent = translate(element.dataset.i18n);
+  });
+
+  translatablePlaceholders.forEach((element) => {
+    element.placeholder = translate(element.dataset.i18nPlaceholder);
+  });
+
+  languageButtons.forEach((button) => {
+    button.classList.toggle("active", button.dataset.lang === currentLanguage);
+  });
+}
+
 // Helper function to validate amount values
 function validateAmount(amount, type) {
   const numAmount = Number(amount);
+  const entryType = translate(`${type}Label`);
   
   // Check if amount is a valid number
   if (isNaN(numAmount)) {
-    alert(`${type === 'expense' ? 'Expense' : 'Income'} amount must be a valid number`);
+    alert(translate("invalidAmount", { type: entryType }));
     return false;
   }
   
   // Check if amount is negative
   if (numAmount < 0) {
-    alert(`${type === 'expense' ? 'Expense' : 'Income'} amount cannot be negative`);
+    alert(translate("negativeAmount", { type: entryType }));
     return false;
   }
   
   // Check if amount is zero
   if (numAmount === 0) {
-    alert(`${type === 'expense' ? 'Expense' : 'Income'} amount cannot be zero`);
+    alert(translate("zeroAmount", { type: entryType }));
     return false;
   }
   
   // Check if amount is unreasonably large (10 million as upper limit)
   const MAX_REASONABLE_AMOUNT = 10000000;
   if (numAmount > MAX_REASONABLE_AMOUNT) {
-    alert(`${type === 'expense' ? 'Expense' : 'Income'} amount cannot exceed ${MAX_REASONABLE_AMOUNT.toLocaleString()}`);
+    alert(
+      translate("maxAmount", {
+        max: MAX_REASONABLE_AMOUNT.toLocaleString(),
+        type: entryType,
+      })
+    );
     return false;
   }
   
