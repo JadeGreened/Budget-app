@@ -50,8 +50,12 @@ input[type="number"] {
 }
 
 .budget-container .app-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-top: 20px;
   margin-left: 20px;
+  margin-right: 20px;
 }
 
 .budget-container .app-title a {
@@ -59,6 +63,31 @@ input[type="number"] {
 }
 .budget-container .app-title a b {
   font-family: "Gilroy Bold";
+}
+
+.language-toggle {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.14);
+  border-radius: 16px;
+}
+
+.language-btn {
+  min-width: 42px;
+  height: 26px;
+  border: 0;
+  border-radius: 13px;
+  color: #fff;
+  background: transparent;
+  cursor: pointer;
+  font-size: 0.8em;
+  font-family: "Gilroy Bold";
+}
+
+.language-btn.active {
+  color: #2a0355;
+  background: #fff;
 }
 
 .budget-header {

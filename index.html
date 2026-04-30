@@ -11,30 +11,34 @@
     <div class="budget-container">
       <div class="app-title">
         <a href="">Budget<b>App</b></a>
+        <div class="language-toggle" aria-label="Language switch">
+          <button class="language-btn active" type="button" data-lang="en">EN</button>
+          <button class="language-btn" type="button" data-lang="zh">中文</button>
+        </div>
       </div>
       <div class="budget-header">
         <div class="balance">
-          <div class="title">Balance</div>
+          <div class="title" data-i18n="balance">Balance</div>
           <div class="value"><small>$</small>0</div>
         </div>
         <div class="account">
           <div class="income">
-            <div class="title">Income</div>
+            <div class="title" data-i18n="income">Income</div>
             <div class="income-total"><small>$</small>0</div>
           </div>
           <div class="chart"></div>
           <div class="outcome">
-            <div class="title">Outcome</div>
+            <div class="title" data-i18n="outcome">Outcome</div>
             <div class="outcome-total"><small>$</small>0</div>
           </div>
         </div>
       </div>
       <div class="budget-dashboard">
-        <div class="dash-title">Dashboard</div>
+        <div class="dash-title" data-i18n="dashboard">Dashboard</div>
         <div class="toggle">
-          <div class="first-tab">Expenses</div>
-          <div class="second-tab">Income</div>
-          <div class="third-tab focus">All</div>
+          <div class="first-tab" data-i18n="expenses">Expenses</div>
+          <div class="second-tab" data-i18n="income">Income</div>
+          <div class="third-tab focus" data-i18n="all">All</div>
         </div>
         <div class="hide" id="expense">
           <ul class="list"></ul>
@@ -44,12 +48,14 @@
               id="expense-title-input"
               name="title"
               placeholder="title"
+              data-i18n-placeholder="titlePlaceholder"
             />
             <input
               type="number"
               id="expense-amount-input"
               name="amount"
               placeholder="$0"
+              data-i18n-placeholder="amountPlaceholder"
             />
             <div class="add-expense"><img src="icon/plus.png" alt="+" /></div>
           </div>
@@ -62,12 +68,14 @@
               id="income-title-input"
               name="title"
               placeholder="title"
+              data-i18n-placeholder="titlePlaceholder"
             />
             <input
               type="number"
               id="income-amount-input"
               name="amount"
               placeholder="$0"
+              data-i18n-placeholder="amountPlaceholder"
             />
             <div class="add-income"><img src="icon/plus.png" alt="+" /></div>
           </div>
