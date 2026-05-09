@@ -13,9 +13,10 @@
         <a href="">Budget<b>App</b></a>
         <div class="language-toggle" aria-label="Language switch">
           <button class="language-btn active" type="button" data-lang="en">EN</button>
-          <button class="language-btn" type="button" data-lang="zh">中文</button>
+          <button class="language-btn" type="button" data-lang="zh">&#20013;&#25991;</button>
         </div>
       </div>
+      <a class="privacy-link" href="privacy.html">Privacy Policy</a>
       <div class="budget-header">
         <div class="balance">
           <div class="title" data-i18n="balance">Balance</div>
@@ -83,6 +84,24 @@
         <div id="all">
           <ul class="list"></ul>
         </div>
+      </div>
+    </div>
+    <div class="cookie-banner hide" id="cookieBanner" role="dialog" aria-live="polite" aria-label="Privacy notice">
+      <div class="cookie-banner__content">
+        <h2>Privacy Notice</h2>
+        <p>
+          This app uses localStorage to remember your budget entries, language
+          preference, and privacy choice on this device.
+        </p>
+        <a href="privacy.html">Read the Privacy Policy</a>
+      </div>
+      <div class="cookie-banner__actions">
+        <button class="cookie-btn cookie-btn--secondary" id="cookieRejectBtn" type="button">
+          Necessary Only
+        </button>
+        <button class="cookie-btn cookie-btn--primary" id="cookieAcceptBtn" type="button">
+          Accept
+        </button>
       </div>
     </div>
     <script src="./budgetLogic.js"></script>

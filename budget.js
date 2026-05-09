@@ -11,6 +11,9 @@ const allList = document.querySelector("#all .list");
 const languageButtons = document.querySelectorAll(".language-btn");
 const translatableText = document.querySelectorAll("[data-i18n]");
 const translatablePlaceholders = document.querySelectorAll("[data-i18n-placeholder]");
+const cookieBanner = document.getElementById("cookieBanner");
+const cookieAcceptBtn = document.getElementById("cookieAcceptBtn");
+const cookieRejectBtn = document.getElementById("cookieRejectBtn");
 
 // SELECT BUTTONS
 const expenseBtn = document.querySelector(".first-tab");
@@ -35,6 +38,7 @@ const DELETE = "delete",
   EDIT = "edit";
 const logic = window.BudgetLogic;
 const LANGUAGE_STORAGE_KEY = "budget_app_language";
+const PRIVACY_CHOICE_STORAGE_KEY = "budget_app_privacy_choice";
 const translations = {
   en: {
     all: "All",
@@ -74,6 +78,7 @@ let currentLanguage = localStorage.getItem(LANGUAGE_STORAGE_KEY) || "en";
 // CHECK IF THERE IS DATA IN LOCAL STORAGE
 ENTRY_LIST = logic.loadEntries(localStorage);
 applyLanguage(currentLanguage);
+initPrivacyBanner();
 updateUI();
 
 // EVENT LISTENERS
@@ -103,6 +108,28 @@ languageButtons.forEach((button) => {
     applyLanguage(button.dataset.lang);
   });
 });
+
+function initPrivacyBanner() {
+  if (!cookieBanner || !cookieAcceptBtn || !cookieRejectBtn) return;
+
+  const savedChoice = localStorage.getItem(PRIVACY_CHOICE_STORAGE_KEY);
+  if (!savedChoice) {
+    cookieBanner.classList.remove("hide");
+  }
+
+  cookieAcceptBtn.addEventListener("click", function () {
+    savePrivacyChoice("accepted");
+  });
+
+  cookieRejectBtn.addEventListener("click", function () {
+    savePrivacyChoice("necessary-only");
+  });
+}
+
+function savePrivacyChoice(choice) {
+  localStorage.setItem(PRIVACY_CHOICE_STORAGE_KEY, choice);
+  cookieBanner.classList.add("hide");
+}
 
 function translate(key, replacements = {}) {
   let text = translations[currentLanguage][key] || translations.en[key] || key;
