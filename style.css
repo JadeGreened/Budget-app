@@ -90,6 +90,127 @@ input[type="number"] {
   background: #fff;
 }
 
+.privacy-link {
+  display: inline-block;
+  margin-top: 8px;
+  margin-left: 20px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.8em;
+  text-decoration: underline;
+}
+
+.cookie-banner {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  width: min(540px, calc(100vw - 40px));
+  padding: 18px;
+  border-radius: 12px;
+  color: #1a0034;
+  background: #fff;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.32);
+}
+
+.cookie-banner h2 {
+  margin: 0 0 6px;
+  font-size: 1.1em;
+  font-family: "Gilroy Bold";
+}
+
+.cookie-banner p {
+  margin: 0 0 8px;
+  line-height: 1.4;
+}
+
+.cookie-banner a {
+  color: #2a0355;
+  text-decoration: underline;
+  font-family: "Gilroy Bold";
+}
+
+.cookie-banner__actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 8px;
+}
+
+.cookie-btn {
+  min-height: 38px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: "Gilroy Bold";
+}
+
+.cookie-btn--primary {
+  color: #fff;
+  background: #2a0355;
+}
+
+.cookie-btn--secondary {
+  color: #2a0355;
+  background: #eee7f6;
+}
+
+.privacy-page {
+  min-height: 100vh;
+  margin: 0;
+  color: #1a0034;
+  background: #f4f1f8;
+}
+
+.privacy-container {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 48px 24px 64px;
+}
+
+.privacy-container h1 {
+  margin: 18px 0 4px;
+  font-size: 2.2em;
+  font-family: "Gilroy Bold";
+}
+
+.privacy-container h2 {
+  margin: 28px 0 8px;
+  font-size: 1.2em;
+  font-family: "Gilroy Bold";
+}
+
+.privacy-container p {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.privacy-updated {
+  color: #675477;
+}
+
+.privacy-back-link {
+  color: #2a0355;
+  text-decoration: underline;
+  font-family: "Gilroy Bold";
+}
+
+@media (max-width: 640px) {
+  .cookie-banner {
+    bottom: 12px;
+    width: calc(100vw - 24px);
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .cookie-banner__actions {
+    justify-content: flex-end;
+  }
+}
+
 .budget-header {
 }
 
